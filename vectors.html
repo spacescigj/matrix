@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style type="text/css">
+
+:root{
+  --bg: #222255;
+}
+
+  
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family: Arial, Helvetica, sans-serif;
+}
+
+canvas{
+/*border: 4px dashed #5500ff;*/
+  transition: all 1s;
+}
+
+
+.mat{
+  display:grid;
+  place-items: center;
+  justify-content: center;
+
+  z-index: 2;
+}
+.mat > div > input{
+  width: 50px;
+  height:50px;
+  font-size: 2em;
+  border: 2px dashed #03bbff;
+  text-align: center;
+}
+
+.main{
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background-color: pink;
+}
+
+.mainhead{
+  text-align: center;
+  color: #ff0066;
+  background-color: var(--bg);
+}
+
+footer{
+  color: #888;
+  background-color: var(--bg);
+  text-align: center;
+  padding: 0.4rem 0;
+}
+
+body{
+background-color: pink;
+}
+</style>
+<!--script src="https://jsdelivr.net"></!script>
+<script>eruda.init();</script-->
+</head>
+<body>
+<h1 class="mainhead">Matrix Visualizer</h1>
+<div class="main">
+<canvas></canvas>
+
+<div class="mat">
+<div>
+  <input type="number" class="m m00" oninput="um(event)" value="2"/>
+  <input type="number" class="m m01" oninput="um(event)" value="1"/>
+</div>
+<div>
+  <input type="number" class="m m10" oninput="um(event)" value="0"/>
+  <input type="number" class="m m11" oninput="um(event)" value="1"/>
+</div>
+</div>
+
+<div class="console">
+  
+</div>
+</div>
+<footer>
+  Developed by Bhomic Kaushik @2026
+</footer>
+<script type="text/javascript">
+
+let canvas = document.querySelector("canvas");
+let ctx = canvas.getContext("2d");
+
+let cellsize = 20;
+
+let cols, rows;
+
+
+function vector(x0,y0,x1,y1,color="yellow",lw=2){
+  ctx.beginPath();
+  ctx.moveTo((Math.floor(cols/2) + x0)*cellsize, (Math.floor(rows/2) - y0)*cellsize);
+  ctx.lineTo((Math.floor(cols/2) + x1)*cellsize, (Math.floor(rows/2) - y1)*cellsize);
+  ctx.lineWidth = lw;
+  ctx.strokeStyle = color;
+  ctx.stroke();
+}
+
+function circle(x0, y0, color="white"){
+  ctx.beginPath();
+  ctx.fillStyle = color;
+  ctx.arc((Math.floor(cols/2) + x0)*cellsize, (Math.floor(rows/2) - y0)*cellsize, 4, 0, 2* Math.PI);
+  ctx.fill();
+}
+  
+function v(x, y, color="yellow",lw=2){
+  vector(0,0,x,y,color,lw);
+  circle(x,y, color);
+}
+
+
+
+let cw, ch;
+let init = function(){
+cw = canvas.width = 300;// window.innerWidth;
+ch = canvas.height = 300; //window.innerHeight;
+
+//ctx.translate(cw / 2, ch / 2);
+//ctx.transform(2, 0, 0, 1, 0,0);
+
+  
+ctx.fillStyle ="#111155";
+ctx.fillRect(0,0,innerWidth, innerHeight);
+console.log("hi");
+
+cols =Math.floor(cw / cellsize);
+rows = Math.floor(ch / cellsize);
+
+ctx.strokeStyle = "#ffffff44";
+ctx.lineWidth = 2;
+for(let i =0; i < rows+1; i++){
+  ctx.beginPath();
+  ctx.moveTo(0, i*cellsize);
+  ctx.lineTo(innerWidth, i*cellsize);
+  ctx.stroke();
+}
+
+for(let j =0; j < cols+1; j ++){
+  ctx.beginPath();
+  ctx.moveTo(j*cellsize, 0);
+  ctx.lineTo(j*cellsize, innerHeight);
+  ctx.stroke();
+}
+  console.log("hi");
+
+let x0= Math.floor(cols/2)*cellsize;
+let y0= Math.floor(rows/2)*cellsize;
+  
+ctx.strokeStyle = "#ff0066";
+ctx.beginPath();
+ctx.moveTo(x0,0);
+ctx.lineTo(x0,innerHeight);
+ctx.stroke();
+
+ctx.strokeStyle = "#03bbff";
+ctx.beginPath();
+ctx.moveTo(0, y0);
+ctx.lineTo(innerWidth, y0);
+ctx.stroke();
+
+/*
+ctx.lineWidth = 1;
+ctx.strokeStyle = "#5500ff"
+for(let i = 0; i < rows; i++){
+  for(let j =0; j < cols; j++){
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(i*cellsize, j*cellsize);
+    ctx.stroke();
+
+
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(i*cellsize, j*cellsize+(rows/2*cellsize));
+    ctx.stroke();
+  }
+}
+*/
+
+v(1,0);
+v(0,1,color="white")
+v(2,1,color="#55ffff");
+
+
+
+//ctx.scale(1, -1);
+  
+}
+
+
+//setTimeout(init, 100);
+window.onload = init;
+
+let matrix = [[2, 1],
+              [0, 1]];
+
+console.log("matrix",matrix);
+function um(e){
+  cl("e",e.target.value);
+  if(e.target.classList.contains("m00")){
+    matrix[0][0] = e.target.value;
+  }
+  else
+  if(e.target.classList.contains("m01")){
+    matrix[0][1] = eval(e.target.value);
+  }
+  else
+  if(e.target.classList.contains("m10")){
+    matrix[1][0] = eval(e.target.value);
+  }
+  else
+  if(e.target.classList.contains("m11")){
+    matrix[1][1] = eval(e.target.value);
+  }
+
+  cl(matrix);
+}
+  
+let toggle = false;
+window.onclick = function(){
+  
+  if(!toggle){
+    toggle = true;
+    canvas.style.transform=`matrix(${matrix[0][0]},${-matrix[1][0]},${-matrix[0][1]},${matrix[1][1]},1,1)`;
+  }else{
+    toggle = false;
+    canvas.style.transform="none";
+  }
+  
+}
+
+let consoleel = document.querySelector(".console");
+
+function cl(val){
+  consoleel.innerHTML = ""+val;
+}
+
+//cl(matrix);
+  
+</script>
+</body>
+</html>
